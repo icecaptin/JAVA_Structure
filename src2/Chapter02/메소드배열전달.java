@@ -48,3 +48,4 @@ public class 메소드배열전달 {
 		showData(data);
 	}
 }
+
