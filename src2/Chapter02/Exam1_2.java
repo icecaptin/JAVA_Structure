@@ -57,25 +57,27 @@ public class Exam1_2 {
                 // 이름 정렬
                 int result = o1.getName().compareTo(o2.getName());
                 if (result == 0) {
-                    // 이름이 같은 경우, 키 내림차순으로 정렬
+                    // 이름이 같은 경우, 키 정렬
                     result = o2.getHeight() - o1.getHeight();
-                }
-                else { //이름 키까지 같으면 시력으로 정렬 근데 시력순이 우선적으로되서 주석처리
-//                	result = (int) (o2.getVision() - o1.getVision());
+                    if (result == 0) {
+                        // 이름과 키가 같은 경우, 시력 정렬
+                        result = Double.compare(o2.getVision(), o1.getVision());
+                    }
                 }
                 return result;
             }
         });
     }
 
+
     public static void main(String[] args) {
         PhyscData[] data = {
             new PhyscData("강주희", 162, 0.3),
-            new PhyscData("양성부", 164, 1.3),
+            new PhyscData("양성부", 167, 1.3),
             new PhyscData("이예진", 152, 0.7),
             new PhyscData("정승길", 172, 0.3),
             new PhyscData("이현진", 182, 0.6),
-            new PhyscData("양소윤", 167, 0.2),
+            new PhyscData("양성부", 165, 1.0),
             new PhyscData("양소윤", 169, 0.5),
         };
         showData(data, "정렬전---------");
@@ -83,3 +85,8 @@ public class Exam1_2 {
         showData(data, "정렬후---------");
     }
 }
+
+
+
+
+
