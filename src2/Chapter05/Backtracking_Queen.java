@@ -1,109 +1,104 @@
 package Chapter05;
-import java.util.Stack;
-import java.awt.Point;
 
+import java.awt.Point;
+import java.util.*;
 
 public class Backtracking_Queen {
-    public static void SolveQueen(int[][] d) {
+    public static List<int[][]> SolveQueen() {
+        List<int[][]> solutions = new ArrayList<>();
+        int[][] board = new int[8][8];
+
+        Stack<Point> stack = new Stack<>();
         int count = 0;
-        Stack<Point> st = new Stack<>();
+        int row = 0;
 
-        for (int ix = 0; ix < d.length; ix++) {
-            for (int iy = 0; iy < d.length; iy++) {
-                if (NextMove(d, ix, iy)) {
-                    Point p = new Point(ix, iy);
-                    d[ix][iy] = 1;
+        while (true) {
+            if (row == 8) {
+                // 모든 퀸이 배치된 경우
+                int[][] solution = copyBoard(board);
+                solutions.add(solution);
+
+                Point point = stack.pop();
+                int col = (int) point.getY();
+                board[row - 1][col] = 0;
+                count--;
+                row--;
+                col++;
+            }
+
+            boolean placed = false;
+            for (int col = 0; col < 8; col++) {
+                if (isValid(board, row, col)) {
+                    board[row][col] = 1;
                     count++;
-                    st.push(p);
+                    stack.push(new Point(row, col));
+                    placed = true;
                     break;
                 }
             }
-        }
 
-        while (count < 8) {
-            Point p = st.pop();
-            int ix = (int) p.getX();
-            int iy = (int) p.getY();
-            d[ix][iy] = 0;
-            count--;
-
-            for (int nextiy = iy + 1; nextiy < d[0].length; nextiy++) {
-                if (NextMove(d, ix, nextiy)) {
-                    Point nextPoint = new Point(ix, nextiy);
-                    d[ix][nextiy] = 1;
-                    count++;
-                    st.push(nextPoint);
+            if (!placed) {
+                if (stack.isEmpty()) {
+                    // 모든 경우를 탐색한 경우 종료
                     break;
                 }
+
+                Point point = stack.pop();
+                int col = (int) point.getY();
+                board[row][col] = 0;
+                count--;
+                row--;
+                col++;
+            } else {
+                row++;
             }
         }
+
+        return solutions;
     }
 
-    public static boolean checkrow(int[][] d, int crow) {
-    	//배열 d에서 crow에 Queen 을 놓을수 잇나?
-        for (int iy = 0; iy < d.length; iy++) {
-            if (d[crow][iy] == 1) {
+    public static boolean isValid(int[][] board, int row, int col) {
+        // 행 검사
+        for (int i = 0; i < row; i++) {
+            if (board[i][col] == 1) {
                 return false;
             }
         }
-        return true;
-    }
 
-    public static boolean checkcol(int[][] d, int ix, int iy) {
-        for (int i = 0; i < d.length; i++) {
-            if (d[i][iy] == 1) {
+        // 좌측 상단 대각선 검사
+        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+            if (board[i][j] == 1) {
                 return false;
             }
         }
-        return true;
-    }
 
-    public static boolean checkDiagSW(int[][] d, int cx, int cy) {
-    	//배열 d에 d[cx][cy]의 sw대각선에 배치가능?
-        int x = cx + 1;
-        int y = cy - 1;
-
-        while (x < d.length && y >= 0) {
-            if (d[x][y] == 1) {
+        // 우측 상단 대각선 검사
+        for (int i = row - 1, j = col + 1; i >= 0 && j < 8; i--, j++) {
+            if (board[i][j] == 1) {
                 return false;
             }
-            x++;
-            y--;
         }
+
         return true;
     }
 
-    public static boolean checkDiagSE(int[][] d, int cx, int cy) {
-        int x = cx + 1;
-        int y = cy + 1;
-
-        while (x < d.length && y < d[0].length) {
-            if (d[x][y] == 1) {
-                return false;
-            }
-            x++;
-            y++;
+    public static int[][] copyBoard(int[][] board) {
+        int[][] copy = new int[8][8];
+        for (int i = 0; i < 8; i++) {
+            System.arraycopy(board[i], 0, copy[i], 0, 8);
         }
-        return true;
-    }
-
-    public static boolean NextMove(int[][] d, int ix, int iy) {
-        return checkrow(d, ix) && checkcol(d, ix, iy) && checkDiagSW(d, ix, iy) && checkDiagSE(d, ix, iy);
+        return copy;
     }
 
     public static void main(String[] args) {
-        int[][] data = new int[8][8]; //8x8 
-        for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[0].length; j++) {
-                data[i][j] = 0;
-            }
-        }
+        List<int[][]> solutions = SolveQueen();
 
-        SolveQueen(data);
-
-        for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[0].length; j++) {
-                System.out.print(" " + data[i][j]);
+        for (int[][] solution : solutions) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    System.out.print(" " + solution[i][j]);
+                }
+                System.out.println();
             }
             System.out.println();
         }
