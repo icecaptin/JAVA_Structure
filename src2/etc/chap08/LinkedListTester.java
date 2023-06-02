@@ -1,3 +1,5 @@
+package etc.chap08;
+
 // 선형리스트 클래스 LinkedList<E>의 사용 예
 
 import java.util.Scanner;
