@@ -2,6 +2,8 @@
 
 import java.util.Comparator;
 
+import Chapter07.TreeNode;
+
 public class BinTree<K,V> {
     //--- 노드 ---//
     static class Node<K,V> {
@@ -168,3 +170,5 @@ public class BinTree<K,V> {
         printSubTree(root);
     }
 }
+
+
