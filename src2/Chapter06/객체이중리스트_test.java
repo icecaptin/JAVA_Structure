@@ -3,6 +3,10 @@ package Chapter06;
 import java.util.Comparator;
 import java.util.Scanner;
 
+import Chapter09.DoubledLinkedList2;
+import Chapter09.Node4;
+import Chapter09.SimpleObject2;
+
 class SimpleObject2 {
     static final int NO = 1; // 번호를 읽어 들일까요?
     static final int NAME = 2; // 이름을 읽어 들일까요?
