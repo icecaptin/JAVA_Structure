@@ -5,17 +5,17 @@ import java.util.Scanner;
 
 //오픈 주소법에 의한 해시
 
-class SimpleObject2 {
+class SimpleObject7 {
 	static final int NO = 1;
 	static final int NAME = 2;
 	String sno; // 회원번호
 	String sname; // 이름
 
-	public SimpleObject2(String sno, String sname) {
+	public SimpleObject7(String sno, String sname) {
 		this.sno = sno;
 		this.sname = sname;
 	}
-	public SimpleObject2() {
+	public SimpleObject7() {
 		this.sno = null;
 		this.sname = null;
 	}
@@ -25,32 +25,32 @@ class SimpleObject2 {
 	}
 
 	// --- 회원번호로 순서를 매기는 comparator ---//
-	public static final Comparator<SimpleObject2> NO_ORDER = new NoOrderComparator();
+	public static final Comparator<SimpleObject7> NO_ORDER = new NoOrderComparator();
 
-	private static class NoOrderComparator implements Comparator<SimpleObject2> {
-		public int compare(SimpleObject2 d1, SimpleObject2 d2) {
+	private static class NoOrderComparator implements Comparator<SimpleObject7> {
+		public int compare(SimpleObject7 d1, SimpleObject7 d2) {
 			return (d1.sno.compareTo(d2.sno) > 0) ? 1 : ((d1.sno.compareTo(d2.sno) < 0)) ? -1 : 0;
 		}
 	}
 
 	// --- 이름으로 순서를 매기는 comparator ---//
-	public static final Comparator<SimpleObject2> NAME_ORDER = new NameOrderComparator();
+	public static final Comparator<SimpleObject7> NAME_ORDER = new NameOrderComparator();
 
-	private static class NameOrderComparator implements Comparator<SimpleObject2> {
-		public int compare(SimpleObject2 d1, SimpleObject2 d2) {
+	private static class NameOrderComparator implements Comparator<SimpleObject7> {
+		public int compare(SimpleObject7 d1, SimpleObject7 d2) {
 			return (d1.sname.compareTo(d2.sname) > 0) ? 1 : ((d1.sname.compareTo(d2.sname) < 0)) ? -1 : 0;
 		}
 	}
 	void scanData(String guide, int sw) {
-		Scanner stdIn = new Scanner(System.in);
+		Scanner sc = new Scanner(System.in);
 		System.out.println(guide + "할 데이터를 입력하세요: ");
 		if ((sw & NO) == NO) {
 			System.out.println("번호: ");
-			sno = stdIn.next();
+			sno = sc.next();
 		}
 		if ((sw & NAME) == NAME) {
 			System.out.println("이름: ");
-			sname = stdIn.next();
+			sname = sc.next();
 		}
 	}
 }
@@ -64,7 +64,7 @@ class OpenHash {
 
 	// --- 버킷 ---//
 	static class Bucket { 
-		private SimpleObject2 data; // 데이터
+		private SimpleObject7 data; // 데이터
 		private Status stat; // 상태
 
 		// --- 생성자(constructor) ---//
@@ -73,7 +73,7 @@ class OpenHash {
 		}
 
 		// --- 모든 필드에 값을 설정 ---//
-		void set(SimpleObject2 data, Status stat) {
+		void set(SimpleObject7 data, Status stat) {
 
 			this.data = data; // 데이터
 			this.stat = stat; // 상태
@@ -85,7 +85,7 @@ class OpenHash {
 		}
 
 		// --- 데이터를 반환 ---//
-		SimpleObject2 getValue() {
+		SimpleObject7 getValue() {
 			return data;
 		}
 
@@ -114,17 +114,18 @@ class OpenHash {
 	}
 
 	// --- 해시값을 구함 ---//
-	public int hashValue(SimpleObject2 key) {
-		return key.hashCode() % size;
+	public int hashValue(SimpleObject7 key) {
+	    int hash = key.hashCode();
+	    return hash % size;
 	}
 
 	// --- 재해시값을 구함 ---//
 	public int rehashValue(int hash) {
-		return (hash + 1) % size;
+	    return (hash + 1) % size;
 	}
 
 	// --- 키값 key를 갖는 버킷 검색 ---//
-	private Bucket searchNode(SimpleObject2 key) {
+	private Bucket searchNode(SimpleObject7 key) {
 		int hash = hashValue(key); // 검색할 데이터의 해시값
 		Bucket p = table[hash]; // 주목 버킷
 
@@ -138,7 +139,7 @@ class OpenHash {
 	}
 
 	// --- 키값이 key인 요소를 검색(데이터를 반환)---//
-	public SimpleObject2 search(SimpleObject2 key, Comparator<? super SimpleObject2> c) {
+	public SimpleObject7 search(SimpleObject7 key, Comparator<? super SimpleObject7> c) {
 		Bucket p = searchNode(key);
 		if (p != null)
 			return p.getValue();
@@ -147,7 +148,7 @@ class OpenHash {
 	}
 
 	// --- 키값이 key인 데이터를 data의 요소로 추가 ---//
-	public int add(SimpleObject2 key, Comparator<? super SimpleObject2> c) {
+	public int add(SimpleObject7 key, Comparator<? super SimpleObject7> c) {
 		if (search(key, c) != null)
 			return 1; // 키값이 이미 등록되어 있음
 
@@ -165,7 +166,7 @@ class OpenHash {
 	}
 
 	// --- 키값이 key인 요소를 삭제 ---//
-	public int remove(SimpleObject2 key, Comparator<? super SimpleObject2> c) {
+	public int remove(SimpleObject7 key, Comparator<? super SimpleObject7> c) {
 		Bucket p = searchNode(key); // 주목 버킷
 		if (p == null)
 			return 1; // 이 키값은 등록되어 있지 않음
@@ -176,25 +177,23 @@ class OpenHash {
 
 	// --- 해시 테이블을 덤프(dump) ---//
 	public void dump() {
-		for (int i = 0; i < size; i++) {
-			System.out.printf("%02d ", i);
-			switch (table[i].stat) {
-			case OCCUPIED:
-				System.out.printf("%s (%s)\n", table[i]);
-				break;
-
-			case EMPTY:
-				System.out.println("-- 비어있음 --");
-				break;
-
-			case DELETED:
-				System.out.println("-- 삭제 완료 --");
-				break;
-			}
-		}
-	}
+        for (int i = 0; i < size; i++) {
+            System.out.printf("%02d ", i);
+            switch (table[i].stat) {
+                case OCCUPIED:
+                    System.out.printf("%s\n", table[i].getValue());
+                    break;
+                case EMPTY:
+                    System.out.println("-- 비어있음 --");
+                    break;
+                case DELETED:
+                    System.out.println("-- 삭제 완료 --");
+                    break;
+            }
+        }
+    }
 }
-//*/
+
 public class 객체오픈해시 {
 
 	static Scanner stdIn = new Scanner(System.in);
@@ -236,16 +235,16 @@ public class 객체오픈해시 {
 
 	public static void main(String[] args) {
 		Menu menu; // 메뉴
-		SimpleObject2 data; // 추가용 데이터 참조
-		SimpleObject2 temp = new SimpleObject2(); // 읽어 들일 데이터
+		SimpleObject7 data; // 추가용 데이터 참조
+		SimpleObject7 temp;//; = new SimpleObject7(); // 읽어 들일 데이터
 		int result;
 		OpenHash hash = new OpenHash(13);
 		do {
 			switch (menu = SelectMenu()) {
 			case ADD: // 추가
-
-				temp.scanData("추가", SimpleObject2.NO | SimpleObject2.NAME);
-				int k = hash.add(temp, SimpleObject2.NO_ORDER);
+				temp = new SimpleObject7();
+				temp.scanData("추가", SimpleObject7.NO | SimpleObject7.NAME);
+				int k = hash.add(temp, SimpleObject7.NO_ORDER);
 				switch (k) {
 				case 1:
 					System.out.println("그 키값은 이미 등록되어 있습니다.");
@@ -257,8 +256,8 @@ public class 객체오픈해시 {
 				break;
 
 			case REMOVE: // 삭제
-				temp.scanData("삭제", SimpleObject2.NO);
-				result = hash.remove(temp, SimpleObject2.NO_ORDER);
+				temp.scanData("삭제", SimpleObject7.NO);
+				result = hash.remove(temp, SimpleObject7.NO_ORDER);
 				if (result == 1)
 					System.out.println(" 삭제 처리");
 				else
@@ -266,8 +265,8 @@ public class 객체오픈해시 {
 				break;
 
 			case SEARCH: // 검색
-				temp.scanData("검색", SimpleObject2.NO);
-				SimpleObject2 t = hash.search(temp, SimpleObject2.NO_ORDER);
+				temp.scanData("검색", SimpleObject7.NO);
+				SimpleObject7 t = hash.search(temp, SimpleObject7.NO_ORDER);
 				if (t != null)
 					System.out.println("그 키를 갖는 데이터는 " + t + "입니다.");
 				else

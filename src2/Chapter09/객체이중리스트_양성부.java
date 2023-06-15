@@ -3,9 +3,6 @@ package Chapter09;
 import java.util.Comparator;
 import java.util.Scanner;
 
-import java.util.Comparator;
-import java.util.Scanner;
-
 class SimpleObject4 {
 	static final int NO = 1; // 번호를 읽어 들일까요?
 	static final int NAME = 2; // 이름을 읽어 들일까요?
@@ -17,7 +14,7 @@ class SimpleObject4 {
         this.name = name;
     }
 
-    public SimpleObject4() {
+    public SimpleObject4() { 
         this.no = null;
         this.name = null;
     }
